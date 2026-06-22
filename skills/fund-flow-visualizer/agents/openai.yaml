@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fund Flow Visualizer"
+  short_description: "Inspect published A-share sector fund-flow snapshots"
+  default_prompt: "Use $fund-flow-visualizer to inspect the latest published sector fund-flow snapshot and summarize the strongest inflows and outflows."
