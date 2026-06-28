@@ -42,8 +42,9 @@ class PublicSiteTests(unittest.TestCase):
 
     def test_frontend_polls_public_json_every_minute(self) -> None:
         script = (ROOT / "static" / "app.js").read_text(encoding="utf-8")
-        self.assertIn("raw.githubusercontent.com/hs997/fund-flow-public/gh-pages/data/latest.json", script)
+        self.assertIn("api.github.com/repos/hs997/fund-flow-public/contents/data/latest.json?ref=gh-pages", script)
         self.assertIn('"data/latest.json"', script)
+        self.assertIn("application/vnd.github.raw+json", script)
         self.assertIn("const DEFAULT_POLL_SECONDS = 60", script)
         self.assertIn("cache: \"no-store\"", script)
         self.assertIn("setInterval(() => fetchFlow({ silent: true })", script)
