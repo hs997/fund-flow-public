@@ -1,4 +1,6 @@
-const PUBLIC_DATA_URL = "data/latest.json";
+const PUBLIC_DATA_URL = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+  ? "data/latest.json"
+  : "https://raw.githubusercontent.com/hs997/fund-flow-public/gh-pages/data/latest.json";
 const DEFAULT_POLL_SECONDS = 60;
 
 const state = {
