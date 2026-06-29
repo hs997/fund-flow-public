@@ -1,6 +1,4 @@
-const PUBLIC_DATA_URL = ["127.0.0.1", "localhost"].includes(window.location.hostname)
-  ? "data/latest.json"
-  : "https://api.github.com/repos/hs997/fund-flow-public/contents/data/latest.json?ref=gh-pages";
+const PUBLIC_DATA_URL = "data/latest.json";
 const DEFAULT_POLL_SECONDS = 60;
 
 const state = {
@@ -312,9 +310,10 @@ async function fetchFlow({ silent = false } = {}) {
     if (!silent && !state.payload) els.loading.hidden = false;
     els.refresh.classList.add("spinning");
     const separator = PUBLIC_DATA_URL.includes("?") ? "&" : "?";
-    const response = await fetch(`${PUBLIC_DATA_URL}${separator}t=${Date.now()}`, {
+    const cacheMinute = Math.floor(Date.now() / 60000);
+    const response = await fetch(`${PUBLIC_DATA_URL}${separator}v=${cacheMinute}`, {
       cache: "no-store",
-      headers: { Accept: "application/vnd.github.raw+json" },
+      headers: { Accept: "application/json" },
     });
     if (!response.ok) throw new Error(`公开数据返回 ${response.status}`);
     const payload = await response.json();

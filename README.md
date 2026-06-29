@@ -10,7 +10,7 @@
 https://hs997.github.io/fund-flow-public/
 ```
 
-网页会通过 GitHub Contents API 读取 `gh-pages` 分支中的 `data/latest.json`，并每 60 秒自动检查一次公开快照是否更新。红色代表主力净流入，绿色代表主力净流出。
+网页会直接读取公开站点同源的 `data/latest.json`，并每 60 秒自动检查一次公开快照是否更新。红色代表主力净流入，绿色代表主力净流出。公开端不依赖 GitHub API，避免关注者访问时触发匿名 API 限流。
 
 ## 当前内容
 
