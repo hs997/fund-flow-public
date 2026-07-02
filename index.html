@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081015">
+  <title>水哥养基 · 公开资金流气泡图</title>
+  <link rel="stylesheet" href="static/styles.css?v=20260629-403fix">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-bar">
+      <div class="brand-block">
+        <strong>水哥养基</strong>
+        <span>公开资金流气泡图</span>
+      </div>
+      <div class="market-meta">
+        <span class="market-state" id="market-state"><i></i><b>连接中</b></span>
+        <span id="data-time">--:--</span>
+        <span class="desktop-only" id="trade-date">----</span>
+      </div>
+      <div class="toolbar">
+        <label class="search-box">
+          <i data-lucide="search"></i>
+          <input id="search-input" type="search" placeholder="搜索板块" autocomplete="off">
+        </label>
+        <button class="icon-button" id="refresh-button" type="button" title="立即刷新" aria-label="立即刷新">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+      </div>
+    </header>
+
+    <nav class="view-nav" aria-label="筛选">
+      <div class="segments" aria-label="资金方向筛选">
+        <button class="segment active" type="button" data-filter="all">全部</button>
+        <button class="segment" type="button" data-filter="inflow">净流入</button>
+        <button class="segment" type="button" data-filter="outflow">净流出</button>
+      </div>
+      <div class="refresh-meta">
+        <span id="updated-at">发布 --</span>
+        <span id="next-refresh">60 秒后自动检查</span>
+      </div>
+    </nav>
+
+    <div class="status-banner" id="status-banner" role="status" hidden></div>
+
+    <section class="summary-band" aria-label="资金流摘要">
+      <div class="summary-cell positive">
+        <span>流入合计</span>
+        <strong id="inflow-total">--</strong>
+      </div>
+      <div class="summary-cell">
+        <span>最强板块</span>
+        <strong id="leader-name">--</strong>
+        <small id="leader-value">--</small>
+      </div>
+      <div class="summary-cell">
+        <span>最弱板块</span>
+        <strong id="laggard-name">--</strong>
+        <small id="laggard-value">--</small>
+      </div>
+      <div class="summary-cell negative">
+        <span>流出合计</span>
+        <strong id="outflow-total">--</strong>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <section class="chart-view active" aria-label="资金流气泡图">
+        <div class="chart-canvas" id="chart-canvas">
+          <svg id="bubble-chart" role="img" aria-label="板块累计主力净额气泡图"></svg>
+          <div class="chart-legend">
+            <span><i class="legend-dot red"></i>主力净流入</span>
+            <span><i class="legend-dot green"></i>主力净流出</span>
+            <em>累计主力净额 · 亿元</em>
+          </div>
+          <div class="empty-state" id="empty-state" hidden>没有匹配的板块</div>
+        </div>
+        <aside class="detail-panel" id="detail-panel" aria-live="polite">
+          <div class="detail-head">
+            <div>
+              <span id="detail-type">板块</span>
+              <h2 id="detail-name">选择一个气泡</h2>
+            </div>
+          </div>
+          <strong class="detail-value" id="detail-value">--</strong>
+          <div class="detail-time" id="detail-time">数据时间 --:--</div>
+          <svg class="sparkline" id="detail-sparkline" aria-label="近40分钟资金流趋势"></svg>
+          <div class="order-flows">
+            <div><span>超大单</span><b id="flow-super">--</b></div>
+            <div><span>大单</span><b id="flow-large">--</b></div>
+            <div><span>中单</span><b id="flow-medium">--</b></div>
+            <div><span>小单</span><b id="flow-small">--</b></div>
+          </div>
+          <p class="detail-source" id="detail-source">数据来源：--</p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span id="source-label">数据来源：东方财富板块分钟资金流</span>
+      <span>公开快照每 60 秒检查更新 · 仅作数据可视化展示，不构成投资建议</span>
+    </footer>
+  </div>
+
+  <div class="tooltip" id="tooltip" hidden></div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <div class="loading-layer" id="loading-layer">
+    <span class="spinner"></span>
+    <b>正在连接公开资金流快照</b>
+  </div>
+
+  <script src="static/vendor/d3.min.js"></script>
+  <script src="static/vendor/lucide.min.js"></script>
+  <script src="static/app.20260702-rawdata.js"></script>
+</body>
+</html>
