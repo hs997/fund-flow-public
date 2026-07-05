@@ -1,0 +1,10 @@
+{
+  "appid": "",
+  "projectname": "shuige-fund-flow-realtime-bubble",
+  "compileType": "miniprogram",
+  "setting": {
+    "es6": true,
+    "minified": true,
+    "urlCheck": true
+  }
+}

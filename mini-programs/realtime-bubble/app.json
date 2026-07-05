@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "水哥养基",
+    "navigationBarBackgroundColor": "#071017",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#081015"
+  },
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,11 @@
+page {
+  min-height: 100%;
+  background: #081015;
+  color: #f4f7f8;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}

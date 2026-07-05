@@ -1,0 +1,63 @@
+<view class="page">
+  <view class="header">
+    <view>
+      <view class="brand">水哥养基</view>
+      <view class="subtitle">实时资金流气泡图</view>
+    </view>
+    <button class="refresh" bindtap="refreshNow" loading="{{loading}}">刷新</button>
+  </view>
+
+  <view class="meta-row">
+    <view class="market {{marketCode}}">
+      <view class="dot"></view>
+      <text>{{marketLabel}}</text>
+    </view>
+    <text>{{tradeDate}} {{dataTime}}</text>
+    <text>{{updatedAtText}}</text>
+  </view>
+
+  <view class="status" tt:if="{{statusText}}">{{statusText}}</view>
+
+  <view class="summary">
+    <view class="summary-cell {{item.kind}}" tt:for="{{summaryCards}}" tt:key="label">
+      <text>{{item.label}}</text>
+      <view>{{item.value}}</view>
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="tools">
+    <view class="tabs">
+      <button class="tab {{activeFilter === 'all' ? 'active' : ''}}" data-filter="all" bindtap="switchFilter">全部</button>
+      <button class="tab {{activeFilter === 'inflow' ? 'active' : ''}}" data-filter="inflow" bindtap="switchFilter">净流入</button>
+      <button class="tab {{activeFilter === 'outflow' ? 'active' : ''}}" data-filter="outflow" bindtap="switchFilter">净流出</button>
+    </view>
+    <input class="search" value="{{keyword}}" bindinput="onSearchInput" placeholder="搜索板块" confirm-type="search" />
+  </view>
+
+  <view class="canvas-wrap">
+    <canvas
+      id="bubbleCanvas"
+      canvas-id="bubbleCanvas"
+      class="bubble-canvas"
+      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+      bindtap="onCanvasTap"
+    ></canvas>
+  </view>
+
+  <view class="detail" tt:if="{{selected}}">
+    <view class="detail-top">
+      <text>{{selected.board_type_cn}} · {{selected.board_code}}</text>
+      <view>{{selected.label}}</view>
+    </view>
+    <view class="detail-value {{selected.kind}}">{{selected.formattedValue}}</view>
+    <view class="flow-grid">
+      <view><text>超大单</text><b class="{{selected.superKind}}">{{selected.superText}}</b></view>
+      <view><text>大单</text><b class="{{selected.largeKind}}">{{selected.largeText}}</b></view>
+      <view><text>中单</text><b class="{{selected.mediumKind}}">{{selected.mediumText}}</b></view>
+      <view><text>小单</text><b class="{{selected.smallKind}}">{{selected.smallText}}</b></view>
+    </view>
+  </view>
+
+  <view class="foot">{{nextRefreshText}} · 仅作数据可视化展示，不构成投资建议</view>
+</view>
