@@ -39,7 +39,8 @@ class PublicSiteTests(unittest.TestCase):
         self.assertEqual(payload["refresh_seconds"], 60)
         self.assertGreaterEqual(len(payload["sectors"]), 20)
         first = payload["sectors"][0]
-        for key in ["board_code", "label", "value", "history", "stale"]:
+        self.assertNotIn("board" + "_code", first)
+        for key in ["label", "value", "history", "stale"]:
             self.assertIn(key, first)
 
     def test_frontend_polls_public_json_every_minute(self) -> None:

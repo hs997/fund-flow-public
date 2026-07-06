@@ -47,7 +47,7 @@
 
   <view class="detail" tt:if="{{selected}}">
     <view class="detail-top">
-      <text>{{selected.board_type_cn}} · {{selected.board_code}}</text>
+      <text>{{selected.board_type_cn}}</text>
       <view>{{selected.label}}</view>
     </view>
     <view class="detail-value {{selected.kind}}">{{selected.formattedValue}}</view>

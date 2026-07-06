@@ -57,6 +57,10 @@ function hideStatus() {
   els.status.hidden = true;
 }
 
+function sectorKey(sector) {
+  return `${sector.order ?? ""}:${sector.label || sector.board_name || ""}`;
+}
+
 function filteredSectors() {
   if (!state.payload) return [];
   const query = state.query.trim().toLowerCase();
@@ -64,7 +68,7 @@ function filteredSectors() {
     if (state.filter === "inflow" && sector.value < 0) return false;
     if (state.filter === "outflow" && sector.value >= 0) return false;
     if (!query) return true;
-    return `${sector.label} ${sector.board_name || ""} ${sector.board_code}`.toLowerCase().includes(query);
+    return `${sector.label} ${sector.board_name || ""}`.toLowerCase().includes(query);
   });
 }
 
@@ -153,7 +157,8 @@ function renderBubbles() {
   axis.selectAll("text").data([null]).join("text").attr("class", "axis-label").attr("x", width / 2).attr("y", axisY + 5).text("水哥养基 · 公开快照");
 
   const nodes = sectors.map((sector) => {
-    const previous = state.nodePositions.get(sector.board_code);
+    const key = sectorKey(sector);
+    const previous = state.nodePositions.get(key);
     const sign = sector.value >= 0 ? 1 : -1;
     const magnitude = Math.abs(sector.value);
     const r = radius(magnitude);
@@ -165,15 +170,15 @@ function renderBubbles() {
     return { ...sector, r, targetX, targetY, x: previous?.x ?? targetX, y: previous?.y ?? targetY };
   });
 
-  const groups = svg.selectAll("g.bubble").data(nodes, (item) => item.board_code);
+  const groups = svg.selectAll("g.bubble").data(nodes, sectorKey);
   groups.exit().transition().duration(220).style("opacity", 0).remove();
   const entered = groups.enter().append("g").attr("class", "bubble").style("opacity", 0);
   entered.append("circle");
   entered.append("text").attr("class", "bubble-label");
   entered.append("text").attr("class", "bubble-value");
   const merged = entered.merge(groups)
-    .classed("selected", (item) => item.board_code === state.selectedCode)
-    .on("click", (_, item) => selectSector(item.board_code))
+    .classed("selected", (item) => sectorKey(item) === state.selectedCode)
+    .on("click", (_, item) => selectSector(sectorKey(item)))
     .on("mouseenter", (event, item) => showTooltip(event, item))
     .on("mousemove", moveTooltip)
     .on("mouseleave", hideTooltip);
@@ -193,7 +198,7 @@ function renderBubbles() {
       nodes.forEach((item) => {
         item.x = Math.max(item.r + 8, Math.min(width - item.r - 8, item.x));
         item.y = Math.max(topPad + item.r, Math.min(height - bottomPad - item.r, item.y));
-        state.nodePositions.set(item.board_code, { x: item.x, y: item.y });
+        state.nodePositions.set(sectorKey(item), { x: item.x, y: item.y });
       });
       merged.attr("transform", (item) => `translate(${item.x},${item.y})`);
       merged.select("circle")
@@ -237,10 +242,10 @@ function hideTooltip() {
 }
 
 function selectSector(code) {
-  const sector = state.payload?.sectors.find((item) => item.board_code === code);
+  const sector = state.payload?.sectors.find((item) => sectorKey(item) === code);
   if (!sector) return;
   state.selectedCode = code;
-  document.querySelector("#detail-type").textContent = `${sector.board_type_cn || "板块"} · ${sector.board_code}`;
+  document.querySelector("#detail-type").textContent = sector.board_type_cn || "板块";
   document.querySelector("#detail-name").textContent = sector.label;
   const value = document.querySelector("#detail-value");
   value.textContent = formatValue(sector.value, 2);
@@ -252,7 +257,7 @@ function selectSector(code) {
   setFlowValue("#flow-medium", sector.medium);
   setFlowValue("#flow-small", sector.small);
   renderSparkline(sector);
-  d3.select(els.chart).selectAll("g.bubble").classed("selected", (item) => item.board_code === code);
+  d3.select(els.chart).selectAll("g.bubble").classed("selected", (item) => sectorKey(item) === code);
 }
 
 function setFlowValue(selector, amount) {
@@ -288,7 +293,7 @@ function renderAll() {
   renderBubbles();
   if (!state.selectedCode && state.payload?.summary?.leader) {
     const leader = state.payload.sectors.find((item) => item.label === state.payload.summary.leader);
-    if (leader) selectSector(leader.board_code);
+    if (leader) selectSector(sectorKey(leader));
   } else if (state.selectedCode) {
     selectSector(state.selectedCode);
   }
@@ -299,7 +304,7 @@ function validatePayload(payload) {
     throw new Error("公开快照缺少板块数据");
   }
   for (const item of payload.sectors) {
-    if (!item.board_code || !item.label || typeof item.value !== "number") {
+    if (!item.label || typeof item.value !== "number") {
       throw new Error("公开快照字段不完整");
     }
   }

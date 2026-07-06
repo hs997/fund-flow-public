@@ -10,6 +10,10 @@ function valueKind(value) {
   return Number(value || 0) >= 0 ? "positive" : "negative";
 }
 
+function sectorKey(sector) {
+  return `${sector.order || ""}:${sector.label || sector.board_name || ""}`;
+}
+
 function shortTime(value) {
   if (!value) return "--";
   const date = new Date(value);
@@ -169,7 +173,7 @@ Page({
       throw new Error("缺少板块数据");
     }
     payload.sectors.forEach((item) => {
-      if (!item.board_code || !item.label || typeof item.value !== "number") {
+      if (!item.label || typeof item.value !== "number") {
         throw new Error("快照字段不完整");
       }
     });
@@ -178,7 +182,7 @@ Page({
   applyPayload(payload) {
     const summary = payload.summary || {};
     const market = payload.market || {};
-    const selectedCode = this.data.selected && this.data.selected.board_code;
+    const selectedKey = this.data.selected && this.data.selected.publicKey;
     this.setData({
       marketCode: market.code || "closed",
       marketLabel: market.label || "未知",
@@ -194,7 +198,7 @@ Page({
       ]
     }, () => {
       this.drawBubbles();
-      const selected = payload.sectors.find((item) => item.board_code === selectedCode)
+      const selected = payload.sectors.find((item) => sectorKey(item) === selectedKey)
         || payload.sectors.find((item) => item.label === summary.leader)
         || payload.sectors[0];
       this.selectSector(selected);
@@ -208,7 +212,7 @@ Page({
       if (this.data.activeFilter === "inflow" && sector.value < 0) return false;
       if (this.data.activeFilter === "outflow" && sector.value >= 0) return false;
       if (!keyword) return true;
-      return `${sector.label} ${sector.board_name || ""} ${sector.board_code}`.toLowerCase().includes(keyword);
+      return `${sector.label} ${sector.board_name || ""}`.toLowerCase().includes(keyword);
     });
   },
 
@@ -284,9 +288,9 @@ Page({
       const fill = item.side > 0 ? mixHex("#a33934", "#ff4d3d", ratio) : mixHex("#176c4d", "#00d17d", ratio);
       ctx.beginPath();
       ctx.setFillStyle(fill);
-      const selectedCode = this.data.selected ? this.data.selected.board_code : "";
-      ctx.setStrokeStyle(item.board_code === selectedCode ? "#ffffff" : (item.side > 0 ? "#ffaaa0" : "#7cf0b9"));
-      ctx.setLineWidth(item.board_code === selectedCode ? 3 : 1.5);
+      const selectedKey = this.data.selected ? this.data.selected.publicKey : "";
+      ctx.setStrokeStyle(sectorKey(item) === selectedKey ? "#ffffff" : (item.side > 0 ? "#ffaaa0" : "#7cf0b9"));
+      ctx.setLineWidth(sectorKey(item) === selectedKey ? 3 : 1.5);
       ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
@@ -319,6 +323,7 @@ Page({
     if (!sector) return;
     const selected = {
       ...sector,
+      publicKey: sectorKey(sector),
       kind: valueKind(sector.value),
       formattedValue: formatValue(sector.value, 2),
       superText: formatValue(sector.super_large, 2),

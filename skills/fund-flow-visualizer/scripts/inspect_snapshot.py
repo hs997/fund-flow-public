@@ -22,7 +22,7 @@ def build_summary(payload: dict, top: int) -> dict:
     sectors = payload.get("sectors") or []
     normalized = [
         {
-            "label": item.get("label") or item.get("board_name") or item.get("board_code"),
+            "label": item.get("label") or item.get("board_name"),
             "value": float(item.get("value", 0)),
             "stale": bool(item.get("stale", False)),
         }
