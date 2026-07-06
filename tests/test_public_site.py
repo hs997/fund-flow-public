@@ -15,6 +15,7 @@ class PublicSiteTests(unittest.TestCase):
             "static/app.js",
             "static/app.20260629-403fix.js",
             "static/app.20260702-rawdata.js",
+            "static/app.20260706-pagesdata.js",
             "static/styles.css",
             "static/vendor/d3.min.js",
             "static/vendor/lucide.min.js",
@@ -27,7 +28,7 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn("static/styles.css", html)
         self.assertIn("static/vendor/d3.min.js", html)
         self.assertIn("static/vendor/lucide.min.js", html)
-        self.assertIn("static/app.20260702-rawdata.js", html)
+        self.assertIn("static/app.20260706-pagesdata.js", html)
         self.assertIn("公开资金流气泡图", html)
 
     def test_latest_json_contract(self) -> None:
@@ -44,8 +45,9 @@ class PublicSiteTests(unittest.TestCase):
             self.assertIn(key, first)
 
     def test_frontend_polls_public_json_every_minute(self) -> None:
-        script = (ROOT / "static" / "app.20260702-rawdata.js").read_text(encoding="utf-8")
+        script = (ROOT / "static" / "app.20260706-pagesdata.js").read_text(encoding="utf-8")
         self.assertIn("raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json", script)
+        self.assertIn("data/latest.json", script)
         self.assertNotIn("api.github.com", script)
         self.assertIn("application/json", script)
         self.assertIn("Math.floor(Date.now() / 60000)", script)

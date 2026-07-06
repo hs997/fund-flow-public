@@ -1,4 +1,7 @@
-const PUBLIC_DATA_URL = "https://raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json";
+const PUBLIC_DATA_URLS = [
+  "data/latest.json",
+  "https://raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json",
+];
 const DEFAULT_POLL_SECONDS = 60;
 
 const state = {
@@ -314,14 +317,8 @@ async function fetchFlow({ silent = false } = {}) {
   try {
     if (!silent && !state.payload) els.loading.hidden = false;
     els.refresh.classList.add("spinning");
-    const separator = PUBLIC_DATA_URL.includes("?") ? "&" : "?";
     const cacheMinute = Math.floor(Date.now() / 60000);
-    const response = await fetch(`${PUBLIC_DATA_URL}${separator}v=${cacheMinute}`, {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-    });
-    if (!response.ok) throw new Error(`公开数据返回 ${response.status}`);
-    const payload = await response.json();
+    const payload = await fetchFirstSnapshot(cacheMinute);
     validatePayload(payload);
     state.payload = payload;
     renderAll();
@@ -336,6 +333,24 @@ async function fetchFlow({ silent = false } = {}) {
     els.loading.hidden = true;
     els.refresh.classList.remove("spinning");
   }
+}
+
+async function fetchFirstSnapshot(cacheMinute) {
+  let lastError = null;
+  for (const dataUrl of PUBLIC_DATA_URLS) {
+    const separator = dataUrl.includes("?") ? "&" : "?";
+    try {
+      const response = await fetch(`${dataUrl}${separator}v=${cacheMinute}`, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) throw new Error(`公开数据返回 ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error("公开快照暂不可用");
 }
 
 function scheduleRefresh(seconds) {

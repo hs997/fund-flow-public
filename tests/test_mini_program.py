@@ -34,13 +34,13 @@ class MiniProgramTests(unittest.TestCase):
         self.assertEqual(config["pages"], ["pages/index/index"])
         self.assertEqual(config["window"]["navigationBarTitleText"], "水哥养基")
 
-    def test_realtime_data_uses_raw_main_without_github_api(self) -> None:
+    def test_realtime_data_uses_pages_first_without_github_api(self) -> None:
         config = (MINI / "utils" / "config.js").read_text(encoding="utf-8")
         script = (MINI / "pages" / "index" / "index.js").read_text(encoding="utf-8")
         self.assertIn("DATA_URLS", config)
-        self.assertIn("raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json", config)
-        self.assertIn("api.github.com/repos/hs997/fund-flow-public/contents/data/latest.json?ref=main", config)
         self.assertIn("hs997.github.io/fund-flow-public/data/latest.json", config)
+        self.assertIn("raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json", config)
+        self.assertNotIn("api.github.com", config)
         self.assertIn("application/vnd.github.raw+json", script)
         self.assertIn("mini.request", script)
         self.assertIn("Math.floor(Date.now() / 60000)", script)
