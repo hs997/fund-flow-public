@@ -92,7 +92,7 @@ function renderHeader() {
   els.dataTime.textContent = String(payload.latest_time || "--:--").slice(-5);
   els.tradeDate.textContent = payload.trade_date || "----";
   els.updatedAt.textContent = formatPublishedAt(payload.updated_at);
-  document.querySelector("#source-label").textContent = `数据来源：${payload.source || "东方财富板块分钟资金流"}`;
+  document.querySelector("#source-label").textContent = `数据来源：${payload.source || "公开板块分钟资金流"}`;
 
   const errors = payload.errors || [];
   if (payload.ok === false || payload.from_cache || errors.length) {
