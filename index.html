@@ -30,11 +30,17 @@
       </div>
     </header>
 
-    <nav class="view-nav" aria-label="筛选">
-      <div class="segments" aria-label="资金方向筛选">
-        <button class="segment active" type="button" data-filter="all">全部</button>
-        <button class="segment" type="button" data-filter="inflow">净流入</button>
-        <button class="segment" type="button" data-filter="outflow">净流出</button>
+    <nav class="view-nav" aria-label="视图与筛选">
+      <div class="view-controls">
+        <div class="segments" aria-label="数据视图">
+          <button class="segment view-segment active" type="button" data-view="realtime">实时气泡</button>
+          <button class="segment view-segment" type="button" data-view="history">历史记录</button>
+        </div>
+        <div class="segments realtime-filters" aria-label="资金方向筛选">
+          <button class="segment filter-segment active" type="button" data-filter="all">全部</button>
+          <button class="segment filter-segment" type="button" data-filter="inflow">净流入</button>
+          <button class="segment filter-segment" type="button" data-filter="outflow">净流出</button>
+        </div>
       </div>
       <div class="refresh-meta">
         <span id="updated-at">发布 --</span>
@@ -66,7 +72,7 @@
     </section>
 
     <main class="workspace">
-      <section class="chart-view active" aria-label="资金流气泡图">
+      <section class="chart-view active" id="realtime-view" aria-label="资金流气泡图">
         <div class="chart-canvas" id="chart-canvas">
           <svg id="bubble-chart" role="img" aria-label="板块累计主力净额气泡图"></svg>
           <div class="chart-legend">
@@ -95,6 +101,47 @@
           <p class="detail-source" id="detail-source">数据来源：--</p>
         </aside>
       </section>
+
+      <section class="history-view" id="history-view" aria-label="历史资金流记录" hidden>
+        <header class="history-toolbar">
+          <label class="history-select-label" for="history-entity">
+            <span>查看对象</span>
+            <select id="history-entity">
+              <option value="__market__">整个市场（板块池合计）</option>
+            </select>
+          </label>
+          <div class="segments" aria-label="历史范围">
+            <button class="segment range-segment" type="button" data-days="3">3天</button>
+            <button class="segment range-segment active" type="button" data-days="7">7天</button>
+            <button class="segment range-segment" type="button" data-days="30">30天</button>
+          </div>
+        </header>
+        <section class="history-summary" aria-label="历史资金流摘要">
+          <div><span>区间合计</span><strong id="history-total">--</strong></div>
+          <div><span>日均净额</span><strong id="history-average">--</strong></div>
+          <div><span>最新记录</span><strong id="history-latest">--</strong></div>
+        </section>
+        <div class="history-content">
+          <div class="history-chart-wrap">
+            <div class="history-chart-head">
+              <div>
+                <span id="history-type">整个市场</span>
+                <h2 id="history-title">整个市场（板块池合计）</h2>
+              </div>
+              <span id="history-count">--</span>
+            </div>
+            <svg id="history-chart" role="img" aria-label="历史每日资金流柱状图"></svg>
+            <p class="history-note" id="history-note">整个市场数据为当日公开板块池内各板块资金流合计。</p>
+          </div>
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead><tr><th>交易日</th><th>资金方向</th><th>累计主力净额</th></tr></thead>
+              <tbody id="history-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="history-empty" id="history-empty" hidden>这个板块暂时没有所选范围内的历史记录</div>
+      </section>
     </main>
 
     <footer class="app-footer">
@@ -112,6 +159,6 @@
 
   <script src="static/vendor/d3.min.js"></script>
   <script src="static/vendor/lucide.min.js"></script>
-  <script src="static/app.20260706-pagesdata.js"></script>
+  <script src="static/app.20260803-history.js"></script>
 </body>
 </html>
