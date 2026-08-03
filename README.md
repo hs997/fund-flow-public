@@ -4,7 +4,7 @@
 
 ## 公开网页
 
-关注者可以打开公开网页查看实时资金流气泡图，以及单个板块或整个板块池最近 3、7、30 个交易日的逐日资金流记录：
+关注者可以打开公开网页查看实时资金流气泡图，以及单个板块或整个板块池最近 3天、7天、30天、3个月、6个月的资金流记录。3个月和6个月视图按周汇总柱状图，同时保留每日明细：
 
 ```text
 https://hs997.github.io/fund-flow-public/
@@ -15,7 +15,7 @@ https://hs997.github.io/fund-flow-public/
 ## 当前内容
 
 - `data/latest.json`：最新发布快照
-- `data/history.json`：最多 30 个交易日的板块与板块池合计历史记录
+- `data/history.json`：最多 132 个交易日（约半年）的板块与板块池合计历史记录
 - `index.html`：公开资金流气泡图网页
 - `static/`：公开网页所需的 CSS、JS 和本地化前端依赖
 - `skills/fund-flow-visualizer`：读取、校验并汇总快照的 Codex Skill

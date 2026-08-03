@@ -17,6 +17,7 @@ class PublicSiteTests(unittest.TestCase):
             "static/app.20260702-rawdata.js",
             "static/app.20260706-pagesdata.js",
             "static/app.20260803-history.js",
+            "static/app.20260803-halfyear.js",
             "static/styles.css",
             "static/vendor/d3.min.js",
             "static/vendor/lucide.min.js",
@@ -30,12 +31,11 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn("static/styles.css", html)
         self.assertIn("static/vendor/d3.min.js", html)
         self.assertIn("static/vendor/lucide.min.js", html)
-        self.assertIn("static/app.20260803-history.js", html)
+        self.assertIn("static/app.20260803-halfyear.js", html)
         self.assertIn("公开资金流气泡图", html)
         self.assertIn("历史记录", html)
-        self.assertIn('data-days="3"', html)
-        self.assertIn('data-days="7"', html)
-        self.assertIn('data-days="30"', html)
+        for value in ["3d", "7d", "30d", "3m", "6m"]:
+            self.assertIn(f'data-range="{value}"', html)
 
     def test_latest_json_contract(self) -> None:
         payload = json.loads((ROOT / "data" / "latest.json").read_text(encoding="utf-8"))
@@ -51,7 +51,7 @@ class PublicSiteTests(unittest.TestCase):
             self.assertIn(key, first)
 
     def test_frontend_polls_public_json_every_minute(self) -> None:
-        script = (ROOT / "static" / "app.20260803-history.js").read_text(encoding="utf-8")
+        script = (ROOT / "static" / "app.20260803-halfyear.js").read_text(encoding="utf-8")
         self.assertIn("raw.githubusercontent.com/hs997/fund-flow-public/main/data/latest.json", script)
         self.assertIn("data/latest.json", script)
         self.assertNotIn("api.github.com", script)
@@ -65,9 +65,10 @@ class PublicSiteTests(unittest.TestCase):
         payload = json.loads((ROOT / "data" / "history.json").read_text(encoding="utf-8"))
         self.assertEqual(payload["brand"], "水哥养基")
         self.assertEqual(payload["unit"], "亿元")
-        self.assertEqual(payload["max_days"], 30)
+        self.assertEqual(payload["max_days"], 132)
+        self.assertEqual(payload["max_months"], 6)
         self.assertGreaterEqual(len(payload["market"]), 3)
-        self.assertLessEqual(len(payload["market"]), 30)
+        self.assertLessEqual(len(payload["market"]), 132)
         self.assertGreaterEqual(len(payload["sectors"]), 20)
         self.assertTrue(payload["sectors"][0]["records"])
         raw = json.dumps(payload, ensure_ascii=False)
@@ -76,11 +77,14 @@ class PublicSiteTests(unittest.TestCase):
         self.assertNotIn("东方财富", raw)
 
     def test_frontend_loads_history_without_public_codes(self) -> None:
-        script = (ROOT / "static" / "app.20260803-history.js").read_text(encoding="utf-8")
+        script = (ROOT / "static" / "app.20260803-halfyear.js").read_text(encoding="utf-8")
         self.assertIn("data/history.json", script)
         self.assertIn("PUBLIC_HISTORY_URLS", script)
-        self.assertIn("historyRange: 7", script)
+        self.assertIn('historyRange: "7d"', script)
         self.assertIn("renderHistoryChart", script)
+        self.assertIn("aggregateWeekly", script)
+        self.assertIn('"3m": { months: 3, weekly: true }', script)
+        self.assertIn('"6m": { months: 6, weekly: true }', script)
         self.assertNotIn("board_code", script)
 
 

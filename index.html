@@ -111,9 +111,11 @@
             </select>
           </label>
           <div class="segments" aria-label="历史范围">
-            <button class="segment range-segment" type="button" data-days="3">3天</button>
-            <button class="segment range-segment active" type="button" data-days="7">7天</button>
-            <button class="segment range-segment" type="button" data-days="30">30天</button>
+            <button class="segment range-segment" type="button" data-range="3d">3天</button>
+            <button class="segment range-segment active" type="button" data-range="7d">7天</button>
+            <button class="segment range-segment" type="button" data-range="30d">30天</button>
+            <button class="segment range-segment" type="button" data-range="3m">3个月</button>
+            <button class="segment range-segment" type="button" data-range="6m">6个月</button>
           </div>
         </header>
         <section class="history-summary" aria-label="历史资金流摘要">
@@ -159,6 +161,6 @@
 
   <script src="static/vendor/d3.min.js"></script>
   <script src="static/vendor/lucide.min.js"></script>
-  <script src="static/app.20260803-history.js"></script>
+  <script src="static/app.20260803-halfyear.js"></script>
 </body>
 </html>
